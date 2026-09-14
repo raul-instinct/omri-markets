@@ -1,205 +1,204 @@
 <!doctype html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>omri@markets: ~/portfolio</title>
-<meta name="description" content="omri-markets terminal — charts build">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>▟</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>השוק שלך · Omri Markets</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap');
 :root{
-  --bg:#070907; --panel:#0a0d0a; --green:#4af626; --green-dim:#1e6b12;
-  --amber:#ffb000; --red:#ff453a; --cyan:#3ed2d2; --mute:#5c7a55; --ink:#c9f2c0;
+  --bg:#f7f6f3; --card:#ffffff; --line:#e8e6e1; --line2:#f0efeb;
+  --ink:#191916; --sub:#75736c; --faint:#a3a19a;
+  --up:#0f9d58; --up-bg:#e6f4ec; --down:#d9382b; --down-bg:#fbe9e7;
+  --accent:#4f46e5; --accent-soft:#eef0fe;
+  --radius:16px;
+  --shadow:0 1px 2px rgba(25,25,22,.05), 0 4px 16px rgba(25,25,22,.04);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg)}
+*{box-sizing:border-box; margin:0; padding:0}
+html{-webkit-text-size-adjust:100%}
 body{
   background:var(--bg); color:var(--ink);
-  font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:14px; line-height:1.55; min-height:100vh;
-  text-shadow:0 0 6px rgba(74,246,38,.18);
+  font-family:'Inter',-apple-system,'Segoe UI','Noto Sans Hebrew',Arial,sans-serif;
+  font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
 }
-.crt{position:fixed;inset:0;pointer-events:none;z-index:50;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
-  mix-blend-mode:multiply;}
-.vignette{position:fixed;inset:0;pointer-events:none;z-index:51;
-  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);}
-.term{max-width:1060px;margin:0 auto;padding:18px 14px 60px}
-.titlebar{display:flex;align-items:center;gap:1ch;border:1px solid var(--green-dim);
-  background:#0d110d;padding:.45em 1ch;color:var(--mute);font-size:12px;border-radius:6px 6px 0 0}
-.titlebar .dots span{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.5ch;vertical-align:middle}
-.dots .r{background:#ff5f57}.dots .y{background:#febc2e}.dots .g{background:#28c840}
-.titlebar b{color:var(--ink);font-weight:500}
-.win{border:1px solid var(--green-dim);border-top:none;padding:1.2em 1.5ch 1.5em;border-radius:0 0 6px 6px;background:var(--panel)}
-a{color:var(--cyan);text-decoration:none}
-a:hover{text-decoration:underline}
-.dim{color:var(--mute)} .amber{color:var(--amber)} .green{color:var(--green)}
-.red{color:var(--red)} .cyan{color:var(--cyan)}
-.he{color:#9fd898}
-.heb{color:#9fd898;direction:rtl;unicode-bidi:isolate;display:inline-block}
-#boot{white-space:pre-wrap;margin-bottom:1em;min-height:9em}
-.cursor{display:inline-block;width:.62em;height:1.1em;background:var(--green);
-  vertical-align:text-bottom;animation:blink 1s steps(1) infinite;box-shadow:0 0 8px var(--green)}
-@keyframes blink{50%{opacity:0}}
-.banner{color:var(--green);white-space:pre;overflow-x:auto;font-size:clamp(4px,1.55vw,12px);line-height:1.25;margin:.2em 0 .8em}
-.panel{position:relative;border:1px solid var(--green-dim);margin:2.2em 0 0;padding:1.1em 1.5ch 1.2em;background:rgba(10,14,10,.6)}
-.panel::before{content:attr(data-title);position:absolute;top:-.85em;left:1.2ch;
-  background:var(--panel);padding:0 1ch;color:var(--amber);font-weight:700;font-size:.92em;z-index:2}
-.cmdline{color:var(--mute);margin:0 0 .8em;white-space:pre-wrap;word-break:break-all}
-.cmdline .ps1{color:var(--green)}
-.logline{white-space:pre-wrap;word-break:break-word;padding:.12em 0}
-.logline .ts{color:var(--mute)}
-.bar{color:var(--green);letter-spacing:-.02em}
-.kv{display:grid;grid-template-columns:11ch 1fr;gap:.1em 1ch}
-.kv dt{color:var(--mute)} .kv dd{white-space:pre-wrap}
-.big{font-size:clamp(26px,5vw,44px);font-weight:800;color:var(--green);letter-spacing:.02em;line-height:1.1}
-.sub{color:var(--mute);font-size:.85em}
-.tag{border:1px solid currentColor;border-radius:3px;padding:0 .6ch;font-size:.72em;letter-spacing:.06em}
-.tag.bin{color:var(--red)} .tag.live{color:var(--green)} .tag.hot{color:var(--amber)} .tag.cold{color:var(--cyan)}
-.dot{display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--green);
-  box-shadow:0 0 6px var(--green);animation:pulse 1.6s ease-in-out infinite;vertical-align:middle;margin-right:.6ch}
-@keyframes pulse{50%{opacity:.25}}
-table{width:100%;border-collapse:collapse;font-size:.95em}
-th{color:var(--mute);font-weight:500;text-align:left;padding:.2em 1ch .5em;border-bottom:1px dashed var(--green-dim);font-size:.82em;letter-spacing:.08em}
-td{padding:.34em 1ch .34em 0;vertical-align:middle;white-space:nowrap}
-tr:hover td{background:rgba(74,246,38,.05)}
-/* ---- charts ---- */
-.rangebar{display:flex;gap:1ch;align-items:center;flex-wrap:wrap;margin-bottom:1em}
-.rbtn{background:none;border:1px solid var(--green-dim);color:var(--mute);font:inherit;
-  padding:.1em 1ch;cursor:pointer;border-radius:3px}
-.rbtn.on{color:#04140a;background:var(--green);border-color:var(--green);font-weight:700;text-shadow:none}
-.chart-card{border:1px solid var(--green-dim);margin:1em 0;padding:.9em 1ch .6ch;background:#060906}
-.chart-head{display:flex;align-items:baseline;gap:1.2ch;flex-wrap:wrap;margin-bottom:.5em}
-.chart-head .sym{color:var(--green);font-weight:800;font-size:1.05em}
-.chart-head .nm{color:var(--mute);font-size:.85em}
-.chart-head .px{margin-left:auto;font-weight:700}
-.chart-body{width:100%;height:230px}
-.fallback{white-space:pre;color:var(--green);font-size:1.15em;overflow-x:auto;padding:1em 0}
-/* uplot terminal skin */
-.u-over{border:none}
-.u-legend{display:none}
-.uplot .u-grid line{stroke:#152215}
-.uplot .u-ticks{stroke:#152215}
-.uplot text{fill:#5c7a55;font-family:'JetBrains Mono',monospace;font-size:10px;text-shadow:none}
-.u-cursor-x,.u-cursor-y{stroke:#2e5c26 !important}
-#cmdrow{display:flex;align-items:baseline;gap:1ch;margin-top:2.2em;border-top:1px dashed var(--green-dim);padding-top:1em}
-#cmdrow .ps1{color:var(--green);white-space:nowrap}
-#cmd{flex:1;background:none;border:none;outline:none;color:var(--ink);
-  font:inherit;text-shadow:inherit;caret-color:var(--green);min-width:4ch}
-#scrollback{white-space:pre-wrap;margin-top:.8em}
-.foot{margin-top:2.4em;color:var(--mute);font-size:.8em;border-top:1px solid var(--green-dim);padding-top:1em;white-space:pre-wrap}
-.scrollx{overflow-x:auto}
-@media(max-width:640px){
-  body{font-size:12.5px}
-  .term{padding:10px 8px 40px}
-  .panel{padding:1em 1ch}
-  .chart-body{height:170px}
-  .chart-head .px{margin-left:0;width:100%}
+.num, .sym, .price, .delta, td.n, .big, .seg, #clock{font-feature-settings:"tnum"; font-variant-numeric:tabular-nums}
+.page{max-width:1080px; margin:0 auto; padding:32px 24px 64px}
+
+/* ---------- header ---------- */
+.top{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:28px}
+.overline{font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--faint)}
+h1{font-size:30px; font-weight:800; letter-spacing:-.01em; margin:4px 0 6px}
+.sub{color:var(--sub); font-size:13px}
+.btc-pill{
+  direction:ltr; display:flex; align-items:center; gap:10px;
+  background:var(--card); border:1px solid var(--line); border-radius:999px;
+  padding:9px 16px; box-shadow:var(--shadow); font-weight:600; font-size:14px;
+}
+.btc-pill .chg{font-weight:600; font-size:13px}
+.live-dot{width:8px; height:8px; border-radius:50%; background:var(--up); animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(15,157,88,.35)}70%{box-shadow:0 0 0 7px rgba(15,157,88,0)}100%{box-shadow:0 0 0 0 rgba(15,157,88,0)}}
+.up{color:var(--up)} .down{color:var(--down)} .dim{color:var(--sub)} .faint{color:var(--faint)}
+
+/* ---------- kpi strip ---------- */
+.kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px}
+.kpi{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px 10px; box-shadow:var(--shadow); min-width:0}
+.kpi-top{display:flex; align-items:baseline; gap:8px; margin-bottom:6px}
+.kpi .sym{font-weight:700; font-size:14px}
+.kpi .nm{color:var(--sub); font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.kpi .price{font-size:20px; font-weight:700; direction:ltr; text-align:right}
+.kpi .chg{font-size:12.5px; font-weight:600; direction:ltr; text-align:right; margin-top:1px}
+.kpi svg{display:block; width:100%; height:30px; margin-top:8px}
+.kpi svg polyline{fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.chip{display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; font-weight:600}
+.chip.up{background:var(--up-bg); color:var(--up)}
+.chip.down{background:var(--down-bg); color:var(--down)}
+
+/* ---------- panels & cards ---------- */
+.panel{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 22px; margin-bottom:20px}
+.panel-head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+h2{font-size:16px; font-weight:700}
+.note{color:var(--faint); font-size:12px; margin-top:10px}
+.seg{direction:ltr; display:inline-flex; background:var(--line2); border-radius:10px; padding:3px; gap:2px}
+.seg button{border:0; background:transparent; padding:5px 14px; border-radius:8px; font:inherit; font-size:13px; font-weight:600; color:var(--sub); cursor:pointer}
+.seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 3px rgba(25,25,22,.12)}
+
+.charts{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.chart-card{border:1px solid var(--line2); border-radius:12px; padding:14px 16px; min-width:0}
+.chart-head{display:flex; align-items:baseline; gap:8px; margin-bottom:8px}
+.chart-head .sym{font-weight:700; font-size:14px}
+.chart-head .nm{color:var(--sub); font-size:12px; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.chart-head .px{direction:ltr; font-weight:700; font-size:14px}
+.chart-head .rg{font-size:11px; color:var(--faint); font-weight:500}
+.chart-body{direction:ltr; height:200px}
+.fallback{font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:1px; color:var(--sub); white-space:pre-wrap; word-break:break-all; padding-top:12px}
+
+/* ---------- trio cards ---------- */
+.trio{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 20px}
+.card h3{font-size:13px; font-weight:700; color:var(--sub); margin-bottom:10px; display:flex; align-items:center; gap:8px}
+.big{font-size:30px; font-weight:800; letter-spacing:-.01em; direction:ltr; text-align:right}
+.big small{font-size:16px; color:var(--faint); font-weight:600}
+.card .lbl{color:var(--sub); font-size:13px; margin-top:2px}
+.bar{direction:ltr; height:6px; background:var(--line2); border-radius:99px; margin:12px 0 6px; overflow:hidden}
+.bar i{display:block; height:100%; border-radius:99px; background:var(--accent)}
+.bar.green i{background:var(--up)}
+.card .meta{font-size:12px; color:var(--faint)}
+.tagchip{font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:999px; letter-spacing:.04em}
+.tagchip.binary{background:#fdf3e3; color:#b4690e}
+.tagchip.live{background:var(--up-bg); color:var(--up)}
+
+/* ---------- news ---------- */
+.news-item{display:flex; gap:10px; padding:10px 0; border-top:1px solid var(--line2)}
+.news-item:first-of-type{border-top:0; padding-top:2px}
+.news-item .t{font-size:11px; color:var(--faint); white-space:nowrap; direction:ltr; padding-top:2px; min-width:74px}
+.news-item .b{font-size:13.5px}
+.news-item a{color:var(--accent); text-decoration:none; font-weight:600}
+.news-item a:hover{text-decoration:underline}
+
+/* ---------- table ---------- */
+table{width:100%; border-collapse:collapse; font-size:14px}
+th{font-size:11.5px; color:var(--faint); font-weight:600; text-align:right; padding:0 8px 8px; border-bottom:1px solid var(--line)}
+td{padding:11px 8px; border-bottom:1px solid var(--line2); vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.n, th.n{text-align:left; direction:ltr}
+td .nm{color:var(--sub); font-size:12px; font-weight:400; margin-right:6px}
+td b{font-weight:700}
+.pill-live{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--up); margin-right:5px; animation:pulse 2s infinite}
+
+/* ---------- footer / toast ---------- */
+footer{color:var(--faint); font-size:12px; line-height:1.8; margin-top:8px}
+footer a{color:var(--sub)}
+#egg{cursor:default; border-bottom:1px dotted var(--faint)}
+.toast{position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:10px 20px; border-radius:999px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:all .35s ease}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .charts{grid-template-columns:1fr}
+  .trio{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .page{padding:20px 14px 56px}
+  h1{font-size:24px}
+  .kpis{grid-template-columns:repeat(2,1fr); gap:8px}
+  .kpi{padding:12px 12px 8px}
+  .kpi .price{font-size:17px}
+  .panel{padding:16px 14px}
+  .big{font-size:25px}
 }
 </style>
 </head>
 <body>
-<div class="crt"></div><div class="vignette"></div>
-<main class="term">
-  <div class="titlebar">
-    <span class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></span>
-    <b>omri@markets</b><span>:~/portfolio — zsh — 80×24</span>
-    <span style="margin-left:auto" id="clock">--:--:--</span>
-  </div>
-  <div class="win">
+<div class="page">
 
-  <div id="boot"></div>
-
-  <div class="banner" aria-hidden="true">
- ██████╗ ███╗   ███╗██████╗ ██╗      ███╗   ███╗ █████╗ ██████╗ ██╗  ██╗███████╗████████╗███████╗
-██╔═══██╗████╗ ████║██╔══██╗██║      ████╗ ████║██╔══██╗██╔══██╗██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝
-██║   ██║██╔████╔██║██████╔╝██║      ██╔████╔██║███████║██████╔╝█████╔╝ █████╗     ██║   ███████╗
-██║   ██║██║╚██╔╝██║██╔══██╗██║      ██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██╔══╝     ██║   ╚════██║
-╚██████╔╝██║ ╚═╝ ██║██║  ██║██║      ██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗███████╗   ██║   ███████║
- ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝      ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝</div>
-
-  <div class="cmdline"><span class="ps1">omri@markets:~$</span> ./charts --interactive --range 3M # <span class="heb">הגרפים. העיקר.</span></div>
-
-  <section class="panel" data-title="CHARTS · גרפים">
-    <div class="rangebar">
-      <span class="dim">range:</span>
-      <button class="rbtn" data-r="30">1M</button>
-      <button class="rbtn on" data-r="90">3M</button>
-      <button class="rbtn" data-r="365">1Y</button>
-      <span class="dim" style="margin-left:auto">hover = crosshair · data: yahoo 1y daily · btc live</span>
+  <header class="top">
+    <div>
+      <div class="overline" dir="ltr">OMRI · MARKETS</div>
+      <h1>הכסף שלך. בלי הרעש.</h1>
+      <div class="sub">מניות: נתוני סגירה 11.9 · BTC חי מ-CoinGecko · <span id="clock">--:--:--</span></div>
     </div>
-    <div id="charts"></div>
+    <div class="btc-pill" id="btc-pill"><span class="live-dot"></span><span>BTC</span><span class="num" id="btc-pill-px">—</span><span class="chg dim" id="btc-pill-chg"></span></div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>גרפים</h2>
+      <div class="seg">
+        <button class="rbtn" data-r="30">1M</button>
+        <button class="rbtn on" data-r="90">3M</button>
+        <button class="rbtn" data-r="365">1Y</button>
+      </div>
+    </div>
+    <div class="charts" id="charts"></div>
+    <div class="note">היסטוריית שנה, נרות יומיים מ-Yahoo Finance · הגרף ירוק כשהטווח בעלייה, אדום בירידה · ריחוף מציג ערכים</div>
   </section>
 
-  <div class="cmdline"><span class="ps1">omri@markets:~$</span> ./scoreboard --since-last-look # <span class="heb">מה זז מאז שהסתכלת</span></div>
+  <div class="trio">
+    <section class="card">
+      <h3>PYPD · ספירת PDUFA <span class="tagchip binary">אירוע בינארי</span></h3>
+      <div class="big" id="pdufa-days">T-—</div>
+      <div class="lbl">ימים עד החלטת ה-FDA · 28 בנובמבר 2026</div>
+      <div class="bar"><i id="pdufa-bar" style="width:0%"></i></div>
+      <div class="meta">אישור או CRL. אין מצב ביניים · שותפות Azurity: $30M מראש + עד ~$320M</div>
+    </section>
 
-  <section class="panel" data-title="SCOREBOARD · לוח תוצאות">
-    <div class="scrollx">
+    <section class="card">
+      <h3>אתגר ה-100 <span class="tagchip live">פעיל</span></h3>
+      <div class="big">₪0 <small>/ ₪100</small></div>
+      <div class="lbl">יום 2 מתוך 7 · דדליין 20.9.2026</div>
+      <div class="bar green"><i style="width:28.5%"></i></div>
+      <div class="meta">מסלול א׳ ממתין לעומרי · מסלול ב׳ סורק · המכונה לא בפאניקה לפני יום 6</div>
+    </section>
+
+    <section class="card">
+      <h3>מה זז בעולם</h3>
+      <div class="news-item"><span class="t">Sep 14</span><span class="b">גולדמן הפכו קריאה: צופים <b>העלאת ריבית 25bp</b> השבוע · <a href="https://www.reuters.com/business/goldman-sachs-now-expects-fed-hike-rates-september-2026-09-14/">רויטרס</a></span></div>
+      <div class="news-item"><span class="t">Sep 13</span><span class="b">ברנט <b class="down">+3.46% ← $108.23</b> · תקיפות חדשות בסעודיה, צינור מזרח-מערב מושבת · <a href="https://www.reuters.com/business/energy/oil-prices-jump-more-than-3-after-new-strikes-saudi-strait-hormuz-2026-09-13/">רויטרס</a></span></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>לוח תוצאות</h2>
+      <span class="note" style="margin:0">מה השתנה מאז שהסתכלת</span>
+    </div>
     <table id="board">
-      <thead><tr>
-        <th>SYM</th><th>LAST</th><th>Δ 1D</th><th>Δ 7D</th><th>Δ 30D</th><th>STATE</th>
-      </tr></thead>
+      <thead><tr><th>נייר</th><th class="n">מחיר</th><th class="n">יום</th><th class="n">שבוע</th><th class="n">חודש</th><th class="n">מצב</th></tr></thead>
       <tbody></tbody>
     </table>
-    </div>
-    <div class="sub" style="margin-top:.8em" id="provenance"></div>
+    <div class="note" id="provenance"></div>
   </section>
 
-  <div class="cmdline"><span class="ps1">omri@markets:~$</span> cat /etc/portfolio.conf</div>
-
-  <section class="panel" data-title="ALLOCATION · הקצאה">
-    <dl class="kv">
-      <dt>core</dt>      <dd><span id="alloc-core" class="bar"></span> <span class="dim">IBI TA-125 tracker · 5112628 · 0% mgmt · "ליבת התיק"</span></dd>
-      <dt>bets</dt>      <dd><span id="alloc-bets" class="bar"></span> <span class="dim">IBIT ~44% · PYPD ~29% of IL book — sized as bets, not beliefs</span></dd>
-      <dt>legacy</dt>    <dd><span id="alloc-legacy" class="bar"></span> <span class="dim">INTC RSUs @ E*TRADE ≈ $34.8k — dwarfs everything. decision deferred until after Munich</span></dd>
-      <dt>rule</dt>      <dd class="heb dim">ניתוח, לא ייעוץ. אתה לוחץ על הקניות.</dd>
-    </dl>
-  </section>
-
-  <div class="cmdline"><span class="ps1">omri@markets:~$</span> pdufa --countdown # <span class="heb">האירוע הבינארי של PYPD</span></div>
-
-  <section class="panel" data-title="PYPD · PDUFA">
-    <div class="big" id="pdufa-days">T-__</div>
-    <div class="sub" style="margin:.2em 0 .9em">days to FDA decision · 2026-11-28 · <span class="tag bin">BINARY</span></div>
-    <div class="bar" id="pdufa-bar" style="font-size:1.1em"></div>
-    <dl class="kv" style="margin-top:1em">
-      <dt>setup</dt>     <dd class="dim">SHIELD II hit all endpoints (60% RRR, p=0.0013) · NDA accepted, priority review · Azurity deal: $30M upfront, up to $320M</dd>
-      <dt>outcomes</dt>  <dd><span class="green">APPROVE → violent up</span> <span class="dim">·</span> <span class="red">CRL → violent down</span> <span class="dim">· no middle setting on this machine</span></dd>
-    </dl>
-  </section>
-
-  <div class="cmdline"><span class="ps1">omri@markets:~$</span> ./challenge_100.sh --status</div>
-
-  <section class="panel" data-title="₪100 CHALLENGE · אתגר ה-100">
-    <dl class="kv">
-      <dt>goal</dt>      <dd>+₪100 net by <b>2026-09-20</b> · started 2026-09-13 · <span class="amber">DAY 2 / 7</span></dd>
-      <dt>elapsed</dt>   <dd><span class="bar">██░░░░░░░░░░░</span> <span class="dim">2/7 days · ₪0 banked · no guaranteed returns were promised</span></dd>
-      <dt>track A</dt>   <dd class="dim">waze-carpool payout held since Mar 2026 → <span class="amber">WAITING-ON-OMRI</span> (his Google Payments, his click)</dd>
-      <dt>track B</dt>   <dd class="dim">flip scan: liquid items under market → <span class="cyan">SCANNING</span> (open sources only; yad2 bot-walled)</dd>
-      <dt>note</dt>      <dd class="heb dim">ראול עובד. עומרי מתחתן. סדר העדיפויות תקין.</dd>
-    </dl>
-  </section>
-
-  <div class="cmdline"><span class="ps1">omri@markets:~$</span> tail -n 5 /var/log/macro.log</div>
-
-  <section class="panel" data-title="MACRO LOG · ראשי">
-    <div class="logline"><span class="ts">Sep 14 10:21</span> <span class="amber">goldman[macro]</span>: call flipped → now expects <b>25bp HIKE</b> this week; markets pricing it in <span class="dim">[<a href="https://www.reuters.com/business/goldman-sachs-now-expects-fed-hike-rates-september-2026-09-14/">reuters</a>]</span></div>
-    <div class="logline"><span class="ts">Sep 13 22:04</span> <span class="red">energy[oil]</span>: brent <span class="red">+3.46% → $108.23</span> · fresh strikes on saudi, E-W pipeline shut <span class="dim">[<a href="https://www.reuters.com/business/energy/oil-prices-jump-more-than-3-after-new-strikes-saudi-strait-hormuz-2026-09-13/">reuters</a>]</span></div>
-    <div class="logline"><span class="ts">Sep 14 10:22</span> <span class="cyan">radar[meta]</span>: wedding-day interrupt cost high → logged, not pushed. <span class="heb dim">מזל טוב, אגב.</span></div>
-    <div class="logline"><span class="ts" id="btc-log-ts">--</span> <span class="green">btc[live]</span>: <span id="btc-log">connecting to coingecko…</span></div>
-  </section>
-
-  <div id="cmdrow">
-    <span class="ps1">omri@markets:~$</span>
-    <input id="cmd" autocomplete="off" spellcheck="false" placeholder="type 'help' — זה באמת עובד">
-  </div>
-  <div id="scrollback"></div>
-
-  <div class="foot" id="foot"></div>
-  </div>
-</main>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast">מתקרבים.</div>
 
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.iife.min.js"></script>
 <script>
@@ -208,22 +207,53 @@ const ASOF = '2026-09-11';
 
 /* ---------- series meta ---------- */
 const SERIES = [
-  {sym:'IBIT',  name:'bitcoin ETF',            cur:'$', data:HIST.IBIT},
-  {sym:'PYPD',  name:'pdufa play · BINARY',    cur:'$', data:HIST.PYPD},
-  {sym:'INTC',  name:'rsu legacy',             cur:'$', data:HIST.INTC},
-  {sym:'BTC',   name:'bitcoin · live',         cur:'$', data:HIST.BTC, live:true},
-  {sym:'EIS',   name:'TA-125 proxy · MSCI Israel', cur:'$', data:HIST.EIS},
+  {sym:'IBIT', name:'ETF ביטקוין',            cur:'$', data:HIST.IBIT},
+  {sym:'PYPD', name:'ביוטק · PDUFA',          cur:'$', data:HIST.PYPD},
+  {sym:'INTC', name:'מורשת RSU',              cur:'$', data:HIST.INTC},
+  {sym:'BTC',  name:'ביטקוין · חי',           cur:'$', data:HIST.BTC, live:true},
+  {sym:'EIS',  name:'פרוקסי ת"א 125 · MSCI ישראל', cur:'$', data:HIST.EIS},
 ];
 let RANGE = 90;
 const charts = [];
+const UP = '#0f9d58', DOWN = '#d9382b';
+
+function sliceRange(data, days){ return data.slice(Math.max(0, data.length - days)); }
+function fmtV(cur, v){ return cur + Number(v).toLocaleString('en-US', {maximumFractionDigits:2}); }
+function pct(a,b){ return (a/b - 1) * 100; }
+
+/* ---------- KPI strip ---------- */
+function sparkline(ys, up){
+  const w=100, h=30, lo=Math.min(...ys), hi=Math.max(...ys), sp=(hi-lo)||1;
+  const pts = ys.map((v,i)=> (i/(ys.length-1)*w).toFixed(1)+','+(h-2-((v-lo)/sp)*(h-5)).toFixed(1)).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" stroke="${up?UP:DOWN}"/></svg>`;
+}
+function renderKpis(){
+  const host = document.getElementById('kpis');
+  host.innerHTML = '';
+  for(const s of SERIES){
+    const c = s.data.map(p=>p[1]);
+    const last = c[c.length-1], d1 = pct(last, c[c.length-2]);
+    const up = d1 >= 0;
+    const el = document.createElement('div');
+    el.className = 'kpi';
+    el.innerHTML = `<div class="kpi-top"><span class="sym" dir="ltr">${s.sym}</span><span class="nm">${s.name}</span></div>
+      <div class="price num" id="kpi-px-${s.sym}">${fmtV(s.cur,last)}</div>
+      <div class="chg ${up?'up':'down'}" id="kpi-chg-${s.sym}">${up?'▲ +':'▼ '}${d1.toFixed(2)}%${s.live?' <span class="pill-live"></span>':''}</div>
+      ${sparkline(c.slice(-30), pct(c[c.length-1], c[c.length-31] ?? c[0]) >= 0)}`;
+    host.appendChild(el);
+  }
+  /* TA-125 card: no free history feed */
+  const ta = document.createElement('div');
+  ta.className = 'kpi';
+  ta.innerHTML = `<div class="kpi-top"><span class="sym" dir="ltr">TA-125</span><span class="nm">ליבת התיק · אינדיקטיבי</span></div>
+    <div class="price num">4,042.96</div>
+    <div class="chg dim">TheMarker · 14.9 · אין פיד חינמי</div>
+    <div style="height:30px;margin-top:8px;display:flex;align-items:center"><span class="faint" style="font-size:11px">הגרף למטה: EIS כפרוקסי</span></div>`;
+  host.appendChild(ta);
+}
+renderKpis();
 
 /* ---------- charts ---------- */
-function sliceRange(data, days){
-  return data.slice(Math.max(0, data.length - days));
-}
-function fmtV(cur, v){
-  return cur + Number(v).toLocaleString('en-US', {maximumFractionDigits:2});
-}
 function buildCharts(){
   const host = document.getElementById('charts');
   host.innerHTML = '';
@@ -232,8 +262,8 @@ function buildCharts(){
     const card = document.createElement('div');
     card.className = 'chart-card';
     card.innerHTML = `<div class="chart-head">
-      <span class="sym">${s.sym}</span><span class="nm">${s.name}</span>
-      <span class="px" id="px-${s.sym}"></span></div>
+      <span class="sym" dir="ltr">${s.sym}</span><span class="nm">${s.name}</span>
+      <span class="px num" id="px-${s.sym}"></span></div>
       <div class="chart-body" id="ch-${s.sym}"></div>`;
     host.appendChild(card);
   }
@@ -244,16 +274,15 @@ function renderCharts(){
     const d = sliceRange(s.data, RANGE);
     const xs = d.map(p => p[0]), ys = d.map(p => p[1]);
     const up = ys[ys.length-1] >= ys[0];
-    const lineCol = up ? '#4af626' : '#ff453a';
+    const lineCol = up ? UP : DOWN;
     const el = document.getElementById('ch-' + s.sym);
     el.innerHTML = '';
     if(!window.uPlot){
-      /* ascii fallback */
       const BARS='▁▂▃▄▅▆▇█', lo=Math.min(...ys), hi=Math.max(...ys), sp=(hi-lo)||1;
       const w = 90, step = Math.max(1, Math.floor(ys.length / w));
       let out='';
       for(let i=0;i<ys.length;i+=step) out += BARS[Math.round((ys[i]-lo)/sp*7)];
-      el.innerHTML = `<div class="fallback">${out}\n<span class="dim">chart lib unreachable (cdn) — ascii fallback · ${ASOF}</span></div>`;
+      el.innerHTML = `<div class="fallback">${out}\nספריית הגרפים לא זמינה (CDN) · ${ASOF}</div>`;
       continue;
     }
     const u = new uPlot({
@@ -262,14 +291,14 @@ function renderCharts(){
       legend: {show:false},
       scales: {x: {time:true}},
       axes: [
-        {stroke:'#5c7a55', grid:{stroke:'#152215'}, ticks:{stroke:'#152215'}},
-        {stroke:'#5c7a55', grid:{stroke:'#152215'}, ticks:{stroke:'#152215'},
+        {stroke:'#a3a19a', font:'11px Inter, sans-serif', grid:{stroke:'#f0efeb'}, ticks:{stroke:'#f0efeb'}, border:{show:false}},
+        {stroke:'#a3a19a', font:'11px Inter, sans-serif', grid:{stroke:'#f0efeb'}, ticks:{stroke:'#f0efeb'}, border:{show:false}, size:56,
          values:(u, vals)=>vals.map(v=> s.cur + (v>=1000 ? (v/1000).toFixed(1)+'k' : v))},
       ],
       series: [
         {},
         {stroke:lineCol, width:2,
-         fill: up ? 'rgba(74,246,38,.07)' : 'rgba(255,69,58,.07)',
+         fill: up ? 'rgba(15,157,88,.08)' : 'rgba(217,56,43,.08)',
          points:{show:false}},
       ],
     }, [xs, ys], el);
@@ -283,7 +312,7 @@ function updatePriceHeads(){
     const last = d[d.length-1][1], first = d[0][1];
     const p = (last/first - 1) * 100;
     const el = document.getElementById('px-' + s.sym);
-    if(el) el.innerHTML = `${fmtV(s.cur,last)} <span class="${p>=0?'green':'red'}">${p>=0?'▲':'▼'} ${p>=0?'+':''}${p.toFixed(1)}%</span> <span class="dim">${RANGE===365?'1Y':RANGE===90?'3M':'1M'}</span>${s.live?' <span class="dot"></span>':''}`;
+    if(el) el.innerHTML = `${fmtV(s.cur,last)} <span class="${p>=0?'up':'down'}" style="font-weight:600;font-size:12.5px">${p>=0?'▲ +':'▼ '}${p.toFixed(1)}%</span> <span class="rg">${RANGE===365?'1Y':RANGE===90?'3M':'1M'}</span>`;
   }
 }
 document.querySelectorAll('.rbtn').forEach(b => b.addEventListener('click', ()=>{
@@ -298,20 +327,18 @@ window.addEventListener('resize', ()=>{
 buildCharts();
 
 /* ---------- scoreboard ---------- */
-function pct(a,b){ return (a/b - 1) * 100; }
 function fmtPct(p){
-  if(p === null || p === undefined || isNaN(p)) return '<span class="dim">   n/a</span>';
-  const cls = p >= 0 ? 'green' : 'red', arrow = p >= 0 ? '▲' : '▼';
-  return `<span class="${cls}">${arrow} ${p>=0?'+':''}${p.toFixed(2)}%</span>`;
+  if(p === null || p === undefined || isNaN(p)) return '<span class="faint">—</span>';
+  const cls = p >= 0 ? 'up' : 'down', arrow = p >= 0 ? '▲' : '▼';
+  return `<span class="${cls}" style="font-weight:600">${arrow} ${p>=0?'+':''}${p.toFixed(2)}%</span>`;
 }
 const BOARD_ROWS = [
-  {sym:'IBIT',  name:'bitcoin ETF',       cur:'$', ys:HIST.IBIT},
-  {sym:'PYPD',  name:'pdufa play',        cur:'$', ys:HIST.PYPD, tag:'bin'},
-  {sym:'INTC',  name:'rsu legacy',        cur:'$', ys:HIST.INTC},
-  {sym:'BTC',   name:'live · coingecko',  cur:'$', ys:HIST.BTC,  tag:'live', id:'btc-row'},
-  {sym:'TA125', name:'core · indicative', cur:'',  ys:null, note:'4,042.96'},
+  {sym:'IBIT',  name:'ETF ביטקוין',        cur:'$', ys:HIST.IBIT},
+  {sym:'PYPD',  name:'ביוטק · PDUFA',      cur:'$', ys:HIST.PYPD, tag:'bin'},
+  {sym:'INTC',  name:'מורשת RSU',          cur:'$', ys:HIST.INTC},
+  {sym:'BTC',   name:'חי · CoinGecko',     cur:'$', ys:HIST.BTC,  tag:'live', id:'btc-row'},
+  {sym:'TA-125', name:'ליבת התיק · אינדיקטיבי', cur:'', ys:null, note:'4,042.96'},
 ];
-const TAGS = {bin:'BINARY', live:'LIVE', hot:'MOVING', cold:'quiet'};
 (function renderBoard(){
   const tb = document.querySelector('#board tbody');
   for(const r of BOARD_ROWS){
@@ -323,136 +350,88 @@ const TAGS = {bin:'BINARY', live:'LIVE', hot:'MOVING', cold:'quiet'};
       d7 = pct(c[c.length-1], c[c.length-8] ?? c[0]);
       d30 = pct(c[c.length-1], c[c.length-31] ?? c[0]);
     }
-    let tag = r.tag ? `<span class="tag ${r.tag}">${TAGS[r.tag]}</span>` : '';
-    if(!tag && d1 !== null) tag = Math.abs(d1) >= 2 ? `<span class="tag hot">MOVING</span>` : `<span class="tag cold">quiet</span>`;
-    const priceTxt = r.ys ? (r.cur + last.toLocaleString('en-US',{maximumFractionDigits:2}))
-                          : '<span class="dim">' + r.note + ' · no feed</span>';
+    let tag = '';
+    if(r.tag === 'bin') tag = '<span class="tagchip binary">בינארי</span>';
+    else if(r.tag === 'live') tag = '<span class="tagchip live">LIVE</span>';
+    else if(d1 !== null) tag = Math.abs(d1) >= 2 ? '<span class="chip up">זז</span>' : '<span class="faint" style="font-size:12px">שקט</span>';
+    const priceTxt = r.ys ? fmtV(r.cur, last) : '<span class="dim">' + r.note + '</span>';
     const tr = document.createElement('tr');
     if(r.id) tr.id = r.id;
-    tr.innerHTML = `<td class="green"><b>${r.sym}</b> <span class="dim">${r.name}</span></td>
-      <td class="last">${priceTxt}</td>
-      <td class="d1">${fmtPct(d1)}</td>
-      <td>${fmtPct(d7)}</td>
-      <td>${fmtPct(d30)}</td>
-      <td>${tag}</td>`;
+    tr.innerHTML = `<td><b dir="ltr">${r.sym}</b><span class="nm">${r.name}</span></td>
+      <td class="n last num">${priceTxt}</td>
+      <td class="n d1 num">${fmtPct(d1)}</td>
+      <td class="n num">${fmtPct(d7)}</td>
+      <td class="n num">${fmtPct(d30)}</td>
+      <td class="n">${tag}</td>`;
     tb.appendChild(tr);
   }
 })();
 document.getElementById('provenance').innerHTML =
-  `stocks: yahoo last-close ${ASOF} (us mkt closed until 16:30 idt) · btc: coingecko <span class="green">live</span> · ta-125: themarker indicative 2026-09-14 · chart proxy: EIS`;
-
-/* ---------- allocation bars ---------- */
-function bar(frac, width=26){
-  const full = Math.round(frac*width);
-  return '█'.repeat(full) + '░'.repeat(width-full);
-}
-document.getElementById('alloc-core').textContent   = bar(0.24) + '  ~24%';
-document.getElementById('alloc-bets').textContent   = bar(0.68) + '  ~68%';
-document.getElementById('alloc-legacy').textContent = bar(0.95) + '  big';
+  `מניות: Yahoo Finance, נר סגירה ${ASOF} (המסחר בארה"ב נסגר עד 16:30 שעון ישראל) · BTC: CoinGecko, חי · ת"א 125: TheMarker אינדיקטיבי 14.9 · פרוקסי גרף: EIS`;
 
 /* ---------- pdufa countdown ---------- */
-const PDUFA = new Date('2026-11-28T17:00:00-05:00');
 function renderPdufa(){
   const today = new Date(); today.setHours(0,0,0,0);
   const days = Math.max(0, Math.round((new Date('2026-11-28T00:00:00') - today) / 86400000));
   document.getElementById('pdufa-days').textContent = 'T-' + days;
   const frac = Math.min(1, Math.max(0, 1 - days/75));
-  document.getElementById('pdufa-bar').textContent =
-    '▓'.repeat(Math.round(frac*30)) + '░'.repeat(30 - Math.round(frac*30)) + `  ${days}d left`;
+  document.getElementById('pdufa-bar').style.width = (frac*100).toFixed(1) + '%';
 }
 renderPdufa(); setInterval(renderPdufa, 60000);
 
 /* ---------- live btc ---------- */
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 async function tickBtc(){
   try{
     const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,ils&include_24hr_change=true');
     const j = await r.json();
-    const usd = j.bitcoin.usd, chg = j.bitcoin.usd_24h_change, ils = j.bitcoin.ils;
+    const usd = j.bitcoin.usd, chg = j.bitcoin.usd_24h_change;
     HIST.BTC[HIST.BTC.length-1][1] = usd;
+    const pillPx = document.getElementById('btc-pill-px');
+    const pillChg = document.getElementById('btc-pill-chg');
+    if(pillPx) pillPx.textContent = '$' + usd.toLocaleString();
+    if(pillChg){
+      pillChg.textContent = (chg>=0?'▲ +':'▼ ') + chg.toFixed(2) + '%';
+      pillChg.className = 'chg ' + (chg>=0?'up':'down');
+    }
     const row = document.getElementById('btc-row');
     if(row){
-      row.querySelector('.last').innerHTML = '$' + usd.toLocaleString() + ' <span class="dot"></span>';
+      row.querySelector('.last').innerHTML = '$' + usd.toLocaleString();
       row.querySelector('.d1').innerHTML = fmtPct(chg);
     }
-    const now = new Date();
-    document.getElementById('btc-log-ts').textContent =
-      MONTHS[now.getMonth()] + ' ' + String(now.getDate()).padStart(2,'0') + ' ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('btc-log').innerHTML =
-      `$${usd.toLocaleString()} (₪${Math.round(ils).toLocaleString()}) ${chg>=0?'▲':'▼'}${Math.abs(chg).toFixed(2)}% 24h — ${Math.abs(chg)<2?'routine noise, no alert':'worth a look'}`;
-    const b = SERIES.find(x=>x.sym==='BTC');
+    const kpx = document.getElementById('kpi-px-BTC');
+    const kchg = document.getElementById('kpi-chg-BTC');
+    if(kpx) kpx.textContent = '$' + usd.toLocaleString();
+    if(kchg){
+      kchg.innerHTML = (chg>=0?'▲ +':'▼ ') + chg.toFixed(2) + '% <span class="pill-live"></span>';
+      kchg.className = 'chg ' + (chg>=0?'up':'down');
+    }
     updatePriceHeads();
     const c = charts.find(x=>x.s.sym==='BTC');
-    if(c && c.u){ /* re-render live chart with updated last point */
+    if(c && c.u){
       const d = sliceRange(HIST.BTC, RANGE);
       c.u.setData([d.map(p=>p[0]), d.map(p=>p[1])]);
     }
-  }catch(e){
-    const last = HIST.BTC[HIST.BTC.length-1][1];
-    document.getElementById('btc-log').textContent = `feed error — last baked $${last.toLocaleString()}`;
-  }
+  }catch(e){ /* keep baked last close */ }
 }
 tickBtc(); setInterval(tickBtc, 60000);
 
 /* ---------- clock ---------- */
-setInterval(()=>{
+function tickClock(){
   document.getElementById('clock').textContent =
     new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Jerusalem'}) + ' IDT';
-}, 1000);
+}
+tickClock(); setInterval(tickClock, 1000);
 
-/* ---------- boot ---------- */
-const BOOT = [
- ['[  0.000] booting omri-markets v3.0 "charts"'],
- ['[  0.041] mounting /dev/portfolio .................. <b class="green">OK</b>'],
- ['[  0.112] holdings: IBIT PYPD INTC TA125 ........... <b class="green">OK</b>'],
- ['[  0.203] coingecko live feed ...................... <b class="green">LIVE</b>'],
- ['[  0.330] yahoo 1y history (baked) ................ <b class="green">OK</b>'],
- ['[  0.440] uplot renderer .......................... <b class="green">OK</b>'],
- ['[  0.512] pdufa timer .............................. <b class="amber">ARMED</b>'],
- ['[  0.666] challenge_100: day 2/7 ................... <b class="cyan">RUNNING</b>'],
- ['[  0.901] rendering charts ........................ <b class="green">OK</b>'],
-];
-(async()=>{
-  const el = document.getElementById('boot');
-  for(const [line] of BOOT){
-    const div = document.createElement('div');
-    div.innerHTML = line;
-    el.appendChild(div);
-    await new Promise(r => setTimeout(r, line ? 80 : 0));
-  }
-  const c = document.createElement('span'); c.className = 'cursor'; el.appendChild(c);
-})();
-
-/* ---------- command line ---------- */
-const CMDS = {
-  help: () => `commands: charts · holdings · btc · pdufa · challenge · news · whoami · motd · clear · sudo\n<span class="dim">hebrew accepted. judgment guaranteed.</span>`,
-  charts: () => `scroll up. hover for crosshair. range buttons: 1M / 3M / 1Y.`,
-  holdings: () => document.querySelector('#board').innerText.replace(/\n/g, ' | '),
-  btc: () => document.getElementById('btc-log').innerText,
-  pdufa: () => document.getElementById('pdufa-days').textContent + ' to the PYPD binary. outcomes: APPROVE / CRL. no middle setting.',
-  challenge: () => `day 2/7 · ₪0 banked · track A waiting on omri · track B scanning.\n<span class="dim">deadline 2026-09-20. the machine does not panic before day 6.</span>`,
-  news: () => `goldman flipped → 25bp hike expected · brent $108.23 after saudi strikes · full log above.`,
-  whoami: () => `omri · team lead · fresh groom <span class="heb">(מזל טוב)</span> · holder of a large INTC decision`,
-  motd: () => `<span class="heb">"הכסף שלך. בלי הרעש. ועכשיו גם עם גרפים."</span>`,
-  sudo: () => `<span class="red">permission denied.</span> nice try.`,
-  'מרהיב': () => `<span class="amber">מתקרבים.</span>`,
-  clear: () => { document.getElementById('scrollback').innerHTML=''; return null; },
-};
-document.getElementById('cmd').addEventListener('keydown', e=>{
-  if(e.key !== 'Enter') return;
-  const raw = e.target.value.trim(); e.target.value='';
-  if(!raw) return;
-  const sb = document.getElementById('scrollback');
-  const fn = CMDS[raw.toLowerCase()] || CMDS[raw];
-  const out = fn ? fn() : `<span class="red">command not found:</span> ${raw} — try 'help'`;
-  sb.innerHTML += `<div><span class="green">omri@markets:~$</span> ${raw}</div>` + (out===null?'':`<div style="margin:.2em 0 .9em 2ch">${out}</div>`);
-  sb.scrollIntoView({behavior:'smooth', block:'nearest'});
+/* ---------- footer + easter egg ---------- */
+document.getElementById('foot').innerHTML =
+`נבנה על ידי <b>raul-instinct</b> · ריפו <a href="https://github.com/raul-instinct/omri-markets">raul-instinct/omri-markets</a><br>
+v1 היה "גנרי". v2 היה טרמינל. v3 הוסיף גרפים. v4 נקי · ניתוח, לא ייעוץ — אתה לוחץ על הקניות · <span id="egg">מרהיב?</span>`;
+document.getElementById('egg').addEventListener('click', ()=>{
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
 });
 
-document.getElementById('foot').innerHTML =
-`built by <b>raul-instinct</b> during a wedding · repo <a href="https://github.com/raul-instinct/omri-markets">raul-instinct/omri-markets</a>
-v1 was "generic". v2 had a shell. v3 has charts. type <span class="green">help</span> ↑
-data: yahoo finance (1y daily, baked ${ASOF}) · coingecko (live btc) · themarker — analysis, not advice. <span class="heb">אתה לוחץ על הקניות.</span>`;
 </script>
 </body>
 </html>
