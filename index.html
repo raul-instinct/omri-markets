@@ -1,45 +1,336 @@
 <!doctype html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Omri Markets — Finance Radar</title>
-<meta name="description" content="Personal market radar for Omri: holdings, macro signals and catalysts.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>omri@markets: ~/portfolio</title>
+<meta name="description" content="omri-markets terminal — since-last-look build">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>▟</text></svg>">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
-:root{--bg:#05070a;--panel:#0d1117;--panel2:#111821;--line:#202a36;--txt:#f4f7fb;--muted:#8795a8;--green:#55f6b4;--cyan:#6ae4ff;--purple:#a88cff;--amber:#ffcb6b;--red:#ff6b7a}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(1100px 600px at 92% -10%,#123929 0,transparent 55%),radial-gradient(850px 500px at -10% 15%,#152442 0,transparent 50%),var(--bg);color:var(--txt);font-family:Heebo,system-ui,sans-serif;min-height:100vh}.noise{position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}.wrap{max-width:1280px;margin:auto;padding:28px 26px 56px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:42px}.brand{display:flex;gap:12px;align-items:center}.mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--green),var(--cyan));display:grid;place-items:center;color:#00130b;font-weight:900;box-shadow:0 0 35px #55f6b438}.brand-title{font-weight:800;letter-spacing:.02em;font-size:19px}.brand-sub{font:500 10px/1 JetBrains Mono;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-top:3px}.live{display:flex;align-items:center;gap:8px;color:#b7c2d1;font:500 11px JetBrains Mono;border:1px solid var(--line);background:#0a0e14b8;padding:10px 13px;border-radius:20px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.35}}
-.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:20px;align-items:stretch;margin-bottom:20px}.hero-main,.countdown,.card,.news{border:1px solid var(--line);background:linear-gradient(145deg,#10161ecc,#090d13e8);border-radius:24px;position:relative;overflow:hidden}.hero-main{padding:38px 38px 34px;min-height:270px}.hero-main:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #55f6b41f;border-radius:50%;left:-100px;top:-160px;box-shadow:0 0 90px #55f6b412 inset}.eyebrow{font:600 10px JetBrains Mono;color:var(--green);letter-spacing:.18em;text-transform:uppercase;margin-bottom:17px}.hero h1{font-size:clamp(40px,6vw,78px);letter-spacing:-.055em;line-height:.92;margin:0;max-width:800px}.hero h1 span{background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;color:transparent}.lede{margin:23px 0 0;color:#9aa8ba;max-width:660px;font-size:15px;line-height:1.7}.macro{display:flex;gap:8px;flex-wrap:wrap;margin-top:23px}.pill{font:500 10px JetBrains Mono;color:#bcc7d5;border:1px solid #263140;background:#111821;padding:8px 10px;border-radius:8px}.pill strong{color:var(--amber)}
-.countdown{padding:30px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(160deg,#20152d,#0e1119 65%)}.countdown:after{content:"PDUFA";position:absolute;left:-12px;bottom:-20px;color:#ffffff06;font:800 88px JetBrains Mono}.cd-label{font:600 10px JetBrains Mono;color:var(--purple);letter-spacing:.16em}.cd-num{font:600 clamp(70px,9vw,112px)/.9 JetBrains Mono;letter-spacing:-.09em}.cd-num small{font:600 13px Heebo;color:#acb6c6;letter-spacing:0}.cd-date{font:500 12px JetBrains Mono;color:#aeb9c9}.cd-bar{height:4px;background:#2b2036;border-radius:4px;margin-top:18px}.cd-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),#e7a5ff);box-shadow:0 0 12px #a88cff;border-radius:4px;transition:width 1s}
-.section-title{display:flex;justify-content:space-between;align-items:end;margin:34px 2px 14px}.section-title h2{margin:0;font-size:19px}.section-title span{font:500 9px JetBrains Mono;color:#647184;letter-spacing:.11em}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{min-height:210px;padding:21px;transition:.25s}.card:hover{transform:translateY(-3px);border-color:#334357}.card-top{display:flex;justify-content:space-between;align-items:flex-start}.symbol{font:600 12px JetBrains Mono}.name{font-size:12px;color:var(--muted);margin-top:5px}.badge{font:600 9px JetBrains Mono;padding:6px 8px;border-radius:7px;background:#14231e;color:var(--green)}.badge.purple{background:#211a2d;color:#c4aaff}.price{font:600 27px JetBrains Mono;margin-top:23px;direction:ltr;text-align:right}.change{font:600 10px JetBrains Mono;color:var(--muted);margin-top:5px}.spark{height:54px;width:100%;margin-top:13px;overflow:visible}.spark path.line{fill:none;stroke:var(--accent,var(--green));stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent,var(--green)) 55%,transparent))}.spark path.area{fill:url(#grad);opacity:.13}.thesis{border-top:1px solid #1f2935;padding-top:11px;margin-top:9px;color:#8190a4;font-size:11px}.card[data-accent=cyan]{--accent:var(--cyan)}.card[data-accent=purple]{--accent:var(--purple)}.card[data-accent=amber]{--accent:var(--amber)}
-.bottom{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.news{padding:24px}.news-head{display:flex;justify-content:space-between;margin-bottom:18px}.news-head h3{margin:0;font-size:17px}.news-head span{font:500 9px JetBrains Mono;color:var(--muted)}.story{display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;padding:14px 0;border-top:1px solid #1d2631;color:inherit;text-decoration:none}.story:first-of-type{border-top:0}.story .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#17201d;color:var(--green)}.story:nth-of-type(3) .ico{background:#241b1c;color:var(--amber)}.story b{font-size:13px;display:block}.story small{color:#748296}.arrow{direction:ltr;color:#647184}.market-map{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.mini{padding:14px;border:1px solid #202b38;background:#0c1118;border-radius:13px}.mini label{display:block;font:500 9px JetBrains Mono;color:#7f8da0}.mini strong{display:block;font:600 16px JetBrains Mono;margin-top:8px;direction:ltr;text-align:right}.mini small{display:block;color:#687689;font-size:10px;margin-top:4px}.footer{margin-top:28px;display:flex;justify-content:space-between;color:#4e5b6c;font:500 9px JetBrains Mono}.skeleton{opacity:.45}.status-ok{color:var(--green)}.status-warn{color:var(--amber)}
-@media(max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.bottom{grid-template-columns:1fr}.countdown{min-height:220px}}@media(max-width:560px){.wrap{padding:20px 14px 40px}header{margin-bottom:28px}.hero-main{padding:28px 22px}.grid{grid-template-columns:1fr}.hero h1{font-size:46px}.countdown{padding:24px}.live span:last-child{display:none}.footer{flex-direction:column;gap:8px}}
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap');
+:root{
+  --bg:#070907; --panel:#0a0d0a; --green:#4af626; --green-dim:#1e6b12;
+  --amber:#ffb000; --red:#ff453a; --cyan:#3ed2d2; --mute:#5c7a55; --ink:#c9f2c0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:14px; line-height:1.55; min-height:100vh;
+  text-shadow:0 0 6px rgba(74,246,38,.18);
+}
+.crt{position:fixed;inset:0;pointer-events:none;z-index:50;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply;}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:51;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);}
+.term{max-width:1060px;margin:0 auto;padding:18px 14px 60px}
+.titlebar{display:flex;align-items:center;gap:1ch;border:1px solid var(--green-dim);
+  background:#0d110d;padding:.45em 1ch;color:var(--mute);font-size:12px;border-radius:6px 6px 0 0}
+.titlebar .dots span{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.5ch;vertical-align:middle}
+.dots .r{background:#ff5f57}.dots .y{background:#febc2e}.dots .g{background:#28c840}
+.titlebar b{color:var(--ink);font-weight:500}
+.win{border:1px solid var(--green-dim);border-top:none;padding:1.2em 1.5ch 1.5em;border-radius:0 0 6px 6px;background:var(--panel)}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+.dim{color:var(--mute)}
+.amber{color:var(--amber)}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.cyan{color:var(--cyan)}
+.he{color:#9fd898}
+#boot{white-space:pre-wrap;margin-bottom:1.2em;min-height:9em}
+.cursor{display:inline-block;width:.62em;height:1.1em;background:var(--green);
+  vertical-align:text-bottom;animation:blink 1s steps(1) infinite;box-shadow:0 0 8px var(--green)}
+@keyframes blink{50%{opacity:0}}
+.banner{color:var(--green);white-space:pre;overflow-x:auto;font-size:clamp(8px,1.6vw,14px);line-height:1.25;margin:.4em 0 1em}
+.panel{position:relative;border:1px solid var(--green-dim);margin:2.2em 0 0;padding:1.1em 1.5ch 1.2em;background:rgba(10,14,10,.6)}
+.panel::before{content:attr(data-title);position:absolute;top:-.85em;left:1.2ch;
+  background:var(--panel);padding:0 1ch;color:var(--amber);font-weight:700;font-size:.92em}
+.cmdline{color:var(--mute);margin:0 0 .8em;white-space:pre-wrap;word-break:break-all}
+.cmdline .ps1{color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:.95em}
+th{color:var(--mute);font-weight:500;text-align:left;padding:.2em 1ch .5em;border-bottom:1px dashed var(--green-dim);font-size:.82em;letter-spacing:.08em}
+td{padding:.34em 1ch .34em 0;vertical-align:middle;white-space:nowrap}
+td.spark,th.spark{white-space:pre;font-size:1.05em;letter-spacing:.04em}
+tr:hover td{background:rgba(74,246,38,.05)}
+.tag{border:1px solid currentColor;border-radius:3px;padding:0 .6ch;font-size:.72em;letter-spacing:.06em}
+.tag.hot{color:var(--amber)} .tag.cold{color:var(--cyan)} .tag.bin{color:var(--red)} .tag.live{color:var(--green)}
+.dot{display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px var(--green);animation:pulse 1.6s ease-in-out infinite;vertical-align:middle;margin-right:.6ch}
+@keyframes pulse{50%{opacity:.25}}
+.logline{white-space:pre-wrap;word-break:break-word;padding:.12em 0}
+.logline .ts{color:var(--mute)}
+.bar{color:var(--green);letter-spacing:-.02em}
+.kv{display:grid;grid-template-columns:11ch 1fr;gap:.1em 1ch}
+.kv dt{color:var(--mute)} .kv dd{white-space:pre-wrap}
+.big{font-size:clamp(26px,5vw,44px);font-weight:800;color:var(--green);letter-spacing:.02em;line-height:1.1}
+.sub{color:var(--mute);font-size:.85em}
+#cmdrow{display:flex;align-items:baseline;gap:1ch;margin-top:2.2em;border-top:1px dashed var(--green-dim);padding-top:1em}
+#cmdrow .ps1{color:var(--green);white-space:nowrap}
+#cmd{flex:1;background:none;border:none;outline:none;color:var(--ink);
+  font:inherit;text-shadow:inherit;caret-color:var(--green);min-width:4ch}
+#scrollback{white-space:pre-wrap;margin-top:.8em}
+.foot{margin-top:2.4em;color:var(--mute);font-size:.8em;border-top:1px solid var(--green-dim);padding-top:1em;white-space:pre-wrap}
+.scrollx{overflow-x:auto}
+@media(max-width:640px){
+  body{font-size:12.5px}
+  .term{padding:10px 8px 40px}
+  th:nth-child(5),td:nth-child(5){display:none}
+  .panel{padding:1em 1ch}
+}
 </style>
 </head>
-<body><div class="noise"></div><main class="wrap">
-<header><div class="brand"><div class="mark">O</div><div><div class="brand-title">OMRI MARKETS</div><div class="brand-sub">Personal finance radar</div></div></div><div class="live"><i class="dot"></i><span id="feedStatus">מתחבר לנתוני שוק</span><span>•</span><span id="clock">--:--:--</span></div></header>
-<section class="hero"><div class="hero-main"><div class="eyebrow">Signal over noise / תמונת מצב</div><h1>הכסף שלך.<br><span>בלי הרעש.</span></h1><p class="lede">מבט אחד על הליבה, ההימורים והאירועים שבאמת יכולים להזיז את התיק. נבנה כדי להפריד בין תנועה יומית לבין שינוי בתזה.</p><div class="macro"><span class="pill"><strong>CORE</strong> TA-125</span><span class="pill"><strong>CATALYST</strong> PYPD</span><span class="pill"><strong>CRYPTO</strong> IBIT + BTC</span><span class="pill"><strong>LEGACY</strong> INTC</span></div></div>
-<aside class="countdown"><div><div class="cd-label">NEXT BINARY EVENT</div><div class="cd-num" id="days">-- <small>ימים</small></div></div><div><div class="cd-date">PYPD · FDA DECISION · 28.11.2026</div><div class="cd-bar"><i id="progress"></i></div></div></aside></section>
-<div class="section-title"><h2>החזקות במוקד</h2><span>MARKET DATA · AUTO REFRESH</span></div>
-<section class="grid" id="holdings">
-<article class="card" data-symbol="ibit.us"><div class="card-top"><div><div class="symbol">IBIT</div><div class="name">iShares Bitcoin Trust</div></div><div class="badge">CRYPTO</div></div><div class="price">$43.77</div><div class="change">סגירה 11.09 · +0.21%</div><svg class="spark" viewBox="0 0 200 54" preserveAspectRatio="none"></svg><div class="thesis">החשיפה העיקרית לביטקוין בתיק הישראלי</div></article>
-<article class="card" data-symbol="pypd.us" data-accent="purple"><div class="card-top"><div><div class="symbol">PYPD</div><div class="name">PolyPid</div></div><div class="badge purple">CATALYST</div></div><div class="price">$5.15</div><div class="change">סגירה 11.09 · -0.19%</div><svg class="spark" viewBox="0 0 200 54" preserveAspectRatio="none"></svg><div class="thesis">תזה בינארית: החלטת FDA בנובמבר</div></article>
-<article class="card" data-symbol="intc.us" data-accent="cyan"><div class="card-top"><div><div class="symbol">INTC</div><div class="name">Intel Corporation</div></div><div class="badge">LEGACY</div></div><div class="price">$102.94</div><div class="change">סגירה 11.09 · +2.61%</div><svg class="spark" viewBox="0 0 200 54" preserveAspectRatio="none"></svg><div class="thesis">הפוזיציה הגדולה · החלטה אחרי מינכן</div></article>
-<article class="card" data-symbol="^ta125" data-accent="amber"><div class="card-top"><div><div class="symbol">TA-125</div><div class="name">IBI Tracker · 5112628</div></div><div class="badge">CORE</div></div><div class="price">ליבת התיק</div><div class="change">0% דמי ניהול בקרן</div><svg class="spark" viewBox="0 0 200 54" preserveAspectRatio="none"></svg><div class="thesis">השכבה המשעממת. בדיוק בגלל זה היא כאן.</div></article>
-</section>
-<section class="bottom"><div class="news"><div class="news-head"><h3>מה באמת זז</h3><span>CURATED SIGNALS</span></div><a class="story" href="https://www.reuters.com/business/goldman-sachs-now-expects-fed-hike-rates-september-2026-09-14/" target="_blank"><div class="ico">↗</div><div><b>גולדמן מצפים כעת להעלאת ריבית של 25 נ״ב</b><small>Reuters · שינוי מאקרו שעשוי להשפיע על מכפילים ונכסי סיכון</small></div><div class="arrow">↗</div></a><a class="story" href="https://www.reuters.com/business/energy/oil-prices-jump-more-than-3-after-new-strikes-saudi-strait-hormuz-2026-09-13/" target="_blank"><div class="ico">◆</div><div><b>ברנט זינק אחרי תקיפות חדשות בסעודיה</b><small>Reuters · לחץ אינפלציוני וסנטימנט סיכון אזורי</small></div><div class="arrow">↗</div></a></div>
-<div class="news"><div class="news-head"><h3>רדאר שוק</h3><span>LIVE + LAST CLOSE</span></div><div class="market-map"><div class="mini"><label>BITCOIN</label><strong id="btc">—</strong><small id="btcChange">CoinGecko live</small></div><div class="mini"><label>S&amp;P 500</label><strong id="spx">7,656.98</strong><small>last close</small></div><div class="mini"><label>NASDAQ</label><strong id="ndq">26,333.04</strong><small>last close</small></div><div class="mini"><label>NEXT CHECK</label><strong id="nextCheck">05:00</strong><small>auto refresh</small></div></div></div></section>
-<div class="footer"><span>RAUL INTELLIGENCE · FOR OMRI</span><span>מידע בלבד · לא ייעוץ השקעות</span></div>
+<body>
+<div class="crt"></div><div class="vignette"></div>
+<main class="term">
+  <div class="titlebar">
+    <span class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></span>
+    <b>omri@markets</b><span>:~/portfolio — zsh — 80×24</span>
+    <span style="margin-left:auto" id="clock">--:--:--</span>
+  </div>
+  <div class="win">
+
+  <div id="boot"></div>
+
+  <div class="banner" aria-hidden="true">
+ ██████╗ ███╗   ███╗██████╗ ██╗       ███╗   ███╗ █████╗ ██████╗ ██╗  ██╗███████╗████████╗███████╗
+██╔═══██╗████╗ ████║██╔══██╗██║       ████╗ ████║██╔══██╗██╔══██╗██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝
+██║   ██║██╔████╔██║██████╔╝██║ ████╗ ██╔████╔██║███████║██████╔╝█████╔╝ █████╗     ██║   ███████╗
+██║   ██║██║╚██╔╝██║██╔══██╗██║ ╚════╝██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██╔══╝     ██║   ╚════██║
+╚██████╔╝██║ ╚═╝ ██║██║  ██║██║       ██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗███████╗   ██║   ███████║
+ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝       ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝</div>
+
+  <div class="cmdline"><span class="ps1">omri@markets:~$</span> ./scoreboard --since-last-look <span class="he"># מה זז מאז שהסתכלת</span></div>
+
+  <section class="panel" data-title="SCOREBOARD · לוח תוצאות">
+    <div class="scrollx">
+    <table id="board">
+      <thead><tr>
+        <th>SYM</th><th>LAST</th><th>Δ 1D</th><th>Δ 7D</th><th class="spark">30D</th><th>STATE</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div class="sub" style="margin-top:.8em" id="provenance"></div>
+  </section>
+
+  <div class="cmdline"><span class="ps1">omri@markets:~$</span> cat /etc/portfolio.conf</div>
+
+  <section class="panel" data-title="ALLOCATION · הקצאה">
+    <dl class="kv">
+      <dt>core</dt>      <dd><span id="alloc-core" class="bar"></span> <span class="dim">IBI TA-125 tracker · 5112628 · 0% mgmt · "ליבת התיק"</span></dd>
+      <dt>bets</dt>      <dd><span id="alloc-bets" class="bar"></span> <span class="dim">IBIT ~44% · PYPD ~29% of IL book — sized as bets, not beliefs</span></dd>
+      <dt>legacy</dt>    <dd><span id="alloc-legacy" class="bar"></span> <span class="dim">INTC RSUs @ E*TRADE ≈ $34.8k — dwarfs everything. decision deferred until after Munich</span></dd>
+      <dt>rule</dt>      <dd class="he dim">ניתוח, לא ייעוץ. אתה לוחץ על הקניות.</dd>
+    </dl>
+  </section>
+
+  <div class="cmdline"><span class="ps1">omri@markets:~$</span> pdufa --countdown <span class="he"># האירוע הבינארי של PYPD</span></div>
+
+  <section class="panel" data-title="PYPD · PDUFA">
+    <div class="big" id="pdufa-days">T-__</div>
+    <div class="sub" style="margin:.2em 0 .9em">days to FDA decision · 2026-11-28 · <span class="tag bin">BINARY</span></div>
+    <div class="bar" id="pdufa-bar" style="font-size:1.1em"></div>
+    <dl class="kv" style="margin-top:1em">
+      <dt>setup</dt>     <dd class="dim">SHIELD II hit all endpoints (60% RRR, p=0.0013) · NDA accepted, priority review · Azurity deal: $30M upfront, up to $320M</dd>
+      <dt>outcomes</dt>  <dd><span class="green">APPROVE → violent up</span> <span class="dim">·</span> <span class="red">CRL → violent down</span> <span class="dim">· no middle setting on this machine</span></dd>
+    </dl>
+  </section>
+
+  <div class="cmdline"><span class="ps1">omri@markets:~$</span> ./challenge_100.sh --status</div>
+
+  <section class="panel" data-title="₪100 CHALLENGE · אתגר ה-100">
+    <dl class="kv">
+      <dt>goal</dt>      <dd>+₪100 net by <b>2026-09-20</b> · started 2026-09-13 · <span class="amber">DAY 2 / 7</span></dd>
+      <dt>elapsed</dt>   <dd><span class="bar">██░░░░░░░░░░░</span> <span class="dim">2/7 days · ₪0 banked · no guaranteed returns were promised</span></dd>
+      <dt>track A</dt>   <dd class="dim">waze-carpool payout held since Mar 2026 → <span class="amber">WAITING-ON-OMRI</span> (his Google Payments, his click)</dd>
+      <dt>track B</dt>   <dd class="dim">flip scan: liquid items under market → <span class="cyan">SCANNING</span> (open sources only; yad2 bot-walled)</dd>
+      <dt>note</dt>      <dd class="he dim">ראול עובד. עומרי מתחתן. סדר העדיפויות תקין.</dd>
+    </dl>
+  </section>
+
+  <div class="cmdline"><span class="ps1">omri@markets:~$</span> tail -n 5 /var/log/macro.log</div>
+
+  <section class="panel" data-title="MACRO LOG · ראשי">
+    <div class="logline"><span class="ts">Sep 14 10:21</span> <span class="amber">goldman[macro]</span>: call flipped → now expects <b>25bp HIKE</b> this week; markets pricing it in <span class="dim">[<a href="https://www.reuters.com/business/goldman-sachs-now-expects-fed-hike-rates-september-2026-09-14/">reuters</a>]</span></div>
+    <div class="logline"><span class="ts">Sep 13 22:04</span> <span class="red">energy[oil]</span>: brent <span class="red">+3.46% → $108.23</span> · fresh strikes on saudi, E-W pipeline shut <span class="dim">[<a href="https://www.reuters.com/business/energy/oil-prices-jump-more-than-3-after-new-strikes-saudi-strait-hormuz-2026-09-13/">reuters</a>]</span></div>
+    <div class="logline"><span class="ts">Sep 14 10:22</span> <span class="cyan">radar[meta]</span>: wedding-day interrupt cost high → logged, not pushed. <span class="he dim">מזל טוב, אגב.</span></div>
+    <div class="logline"><span class="ts" id="btc-log-ts">--</span> <span class="green">btc[live]</span>: <span id="btc-log">connecting to coingecko…</span></div>
+  </section>
+
+  <div id="cmdrow">
+    <span class="ps1">omri@markets:~$</span>
+    <input id="cmd" autocomplete="off" spellcheck="false" placeholder="type 'help' — זה באמת עובד">
+  </div>
+  <div id="scrollback"></div>
+
+  <div class="foot" id="foot"></div>
+  </div>
 </main>
+
 <script>
-const $=s=>document.querySelector(s);const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:n>999?0:2}).format(n);
-function clock(){const d=new Date();$('#clock').textContent=d.toLocaleTimeString('he-IL',{hour12:false});}clock();setInterval(clock,1000);
-const target=new Date('2026-11-28T00:00:00+02:00'),start=new Date('2026-09-14T00:00:00+03:00');const now=new Date(),days=Math.max(0,Math.ceil((target-now)/864e5));$('#days').innerHTML=days+' <small>ימים</small>';$('#progress').style.width=Math.min(100,Math.max(3,(now-start)/(target-start)*100))+'%';
-function spark(el,seed=3){let x=seed,v=46,pts=[];for(let i=0;i<18;i++){x=(x*9301+49297)%233280;v=Math.max(8,Math.min(50,v+(x/233280-.48)*16));pts.push([i*200/17,v]);}let d=pts.map((p,i)=>(i?'L':'M')+p[0]+','+(54-p[1])).join(' ');el.innerHTML='<path class="line" d="'+d+'"/>'}
-document.querySelectorAll('.spark').forEach((e,i)=>spark(e,17+i*29));
-async function stooq(symbol){const u='https://stooq.com/q/l/?s='+encodeURIComponent(symbol)+'&f=sd2t2ohlcv&h&e=csv';const t=await fetch(u).then(r=>r.text());const row=t.trim().split('\n')[1]?.split(',');if(!row||row[6]==='N/D')throw Error('no quote');return +row[6]}
-async function loadMarkets(){let ok=0;await Promise.all([...document.querySelectorAll('.card[data-symbol]')].slice(0,0).map(async(c)=>{try{let p=await stooq(c.dataset.symbol);c.querySelector('.price').textContent='$'+fmt(p);c.querySelector('.price').classList.remove('skeleton');c.querySelector('.change').textContent='מחיר סגירה אחרון · STOOQ';ok++}catch(e){c.querySelector('.change').textContent='נתון שוק לא זמין כרגע';}}));
-for(const [s,id] of [['^spx','spx'],['^ndq','ndq']]){try{$('#'+id).textContent=fmt(await stooq(s));ok++}catch(e){}}
-try{const d=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true').then(r=>r.json());$('#btc').textContent='$'+fmt(d.bitcoin.usd);let ch=d.bitcoin.usd_24h_change;$('#btcChange').textContent=(ch>=0?'+':'')+ch.toFixed(2)+'% · 24H';$('#btcChange').style.color=ch>=0?'var(--green)':'var(--red)';ok++}catch(e){}
-$('#feedStatus').textContent=ok?'BTC חי · שאר הנתונים סגירה אחרונה':'סגירה אחרונה · BTC בהמתנה';$('#feedStatus').className=ok?'status-ok':'status-warn';$('#nextCheck').textContent='05:00';}
-loadMarkets();setInterval(loadMarkets,300000);
-</script></body></html>
+const DATA = {"IBIT": {"price": 43.77, "prevClose": 43.68, "closes30": [35.64, 36.16, 36.39, 36.74, 36.49, 36.8, 36.23, 35.94, 35.89, 35.88, 35.63, 36.42, 36.6, 38.78, 41.2, 43.68, 44.64, 44.72, 44.46, 45.29, 43.9, 44.67, 43.76, 43.79, 46.35, 45.23, 44.39, 44.29, 43.68, 43.77], "asof": "2026-09-11"}, "PYPD": {"price": 5.15, "prevClose": 5.16, "closes30": [4.29, 4.36, 4.45, 4.6, 4.81, 4.84, 4.77, 4.73, 4.84, 4.78, 4.74, 4.77, 4.73, 5.01, 5.08, 5.1, 4.99, 5.1, 5.11, 5.12, 5.07, 5.14, 5.33, 5.3, 5.27, 5.39, 5.33, 5.2, 5.16, 5.15], "asof": "2026-09-11"}, "INTC": {"price": 102.94, "prevClose": 100.32, "closes30": [90.2, 91.0, 100.86, 101.06, 99.81, 101.65, 97.52, 97.71, 100.95, 104.56, 102.5, 103.49, 96.69, 92.8, 92.13, 90.07, 87.26, 87.48, 88.24, 92.09, 89.47, 89.51, 88.97, 90.05, 91.67, 95.8, 104.47, 106.24, 100.32, 102.94], "asof": "2026-09-11"}, "GSPC": {"price": 7656.98, "prevClose": 7591.7, "closes30": [7489.72, 7600.5, 7736.52, 7723.55, 7709.96, 7757.64, 7753.11, 7728.2, 7748.5, 7798.99, 7785.76, 7745.06, 7691.76, 7707.98, 7641.16, 7674.37, 7652.86, 7677.28, 7675.7, 7730.99, 7711.76, 7686.14, 7631.47, 7666.6, 7747.71, 7718.6, 7673.52, 7636.36, 7591.7, 7656.98], "asof": "2026-09-11"}, "IXIC": {"price": 26333.03, "prevClose": 26081.72, "closes30": [25373.85, 25913.9, 26584.99, 26363.44, 26348.35, 26690.62, 26605.36, 26445.45, 26588.49, 26803.03, 26729.16, 26644.91, 26289.71, 26331.09, 26067.17, 26180.46, 25980.19, 26151.3, 26130.2, 26541.35, 26402.42, 26370.89, 26099.77, 26217.83, 26584.06, 26506.99, 26421.41, 26253.34, 26081.72, 26333.04], "asof": "2026-09-11"}, "BTC": {"price": null, "closes30": [62844, 64491, 64686, 69291, 73021, 78318, 77081, 77712, 78974, 78511, 79018, 80268, 77821, 78225, 77658, 78553, 77416, 77297, 81265, 79671, 79822, 80329, 79093, 78451, 78283, 76555, 77204, 77262, 76819, 77698], "asof": "live"}, "TA125": {"price": 4042.96, "prevClose": null, "closes30": [], "asof": "2026-09-14", "note": "indicative"}};
+
+/* ---------- sparklines ---------- */
+const BARS = '▁▂▃▄▅▆▇█';
+function spark(closes){
+  if(!closes || closes.length < 2) return null;
+  const lo = Math.min(...closes), hi = Math.max(...closes), span = (hi-lo) || 1;
+  return closes.map(c => BARS[Math.round((c-lo)/span*7)]).join('');
+}
+function pct(a,b){ return (a/b - 1) * 100; }
+function fmtPct(p){
+  if(p === null || isNaN(p)) return '<span class="dim">   n/a</span>';
+  const cls = p >= 0 ? 'green' : 'red', arrow = p >= 0 ? '▲' : '▼';
+  return `<span class="${cls}">${arrow} ${p>=0?'+':''}${p.toFixed(2)}%</span>`;
+}
+function sparkSpan(closes){
+  const s = spark(closes);
+  if(!s) return '<span class="dim">─ no feed ─</span>';
+  const up = closes[closes.length-1] >= closes[0];
+  return `<span class="${up?'green':'red'}">${s}</span>`;
+}
+
+/* ---------- scoreboard ---------- */
+const ROWS = [
+  {sym:'IBIT',  name:'bitcoin ETF',      cur:'$', d:DATA.IBIT,  tag:null},
+  {sym:'PYPD',  name:'pdufa play',       cur:'$', d:DATA.PYPD,  tag:'bin'},
+  {sym:'INTC',  name:'rsu legacy',       cur:'$', d:DATA.INTC,  tag:null},
+  {sym:'BTC',   name:'live · coingecko', cur:'$', d:DATA.BTC,   tag:'live', id:'btc-row'},
+  {sym:'TA125', name:'core · indicative',cur:'',  d:DATA.TA125, tag:null},
+];
+const TAGS = {bin:'BINARY', live:'LIVE', hot:'HOT', cold:'COLD'};
+function renderBoard(){
+  const tb = document.querySelector('#board tbody');
+  tb.innerHTML = '';
+  for(const r of ROWS){
+    const c30 = r.d.closes30;
+    const last = r.d.price ?? (c30.length ? c30[c30.length-1] : null);
+    const d1 = c30.length > 1 ? pct(c30[c30.length-1], c30[c30.length-2]) : null;
+    const d7 = c30.length > 7 ? pct(c30[c30.length-1], c30[c30.length-8]) : null;
+    let tag = r.tag ? `<span class="tag ${r.tag}">${TAGS[r.tag]}</span>` : '';
+    if(!tag && d1 !== null) tag = Math.abs(d1) >= 2 ? `<span class="tag hot">MOVING</span>` : `<span class="tag cold">quiet</span>`;
+    const priceTxt = last === null ? '<span class="dim">—</span>' :
+      (r.cur + last.toLocaleString('en-US', {maximumFractionDigits:2}));
+    const tr = document.createElement('tr');
+    if(r.id) tr.id = r.id;
+    tr.innerHTML = `<td class="green"><b>${r.sym}</b> <span class="dim">${r.name}</span></td>
+      <td class="last">${priceTxt}</td>
+      <td class="d1">${fmtPct(d1)}</td>
+      <td class="d7">${fmtPct(d7)}</td>
+      <td class="spark">${sparkSpan(c30)}</td>
+      <td>${tag}</td>`;
+    tb.appendChild(tr);
+  }
+}
+renderBoard();
+document.getElementById('provenance').innerHTML =
+  `stocks: yahoo last-close ${DATA.IBIT.asof} (us mkt closed until 16:30 idt) · btc: coingecko <span class="green">live</span> · ta-125: themarker indicative ${DATA.TA125.asof}`;
+
+/* ---------- allocation bars ---------- */
+function bar(frac, width=26){
+  const full = Math.round(frac*width);
+  return '█'.repeat(full) + '░'.repeat(width-full);
+}
+document.getElementById('alloc-core').textContent   = bar(0.24) + '  ~24%';
+document.getElementById('alloc-bets').textContent   = bar(0.68) + '  ~68%';
+document.getElementById('alloc-legacy').textContent = bar(0.95) + '  big';
+
+/* ---------- pdufa countdown ---------- */
+const PDUFA = new Date('2026-11-28T17:00:00-05:00');
+function renderPdufa(){
+  const days = Math.max(0, Math.ceil((PDUFA - Date.now()) / 86400000));
+  document.getElementById('pdufa-days').textContent = 'T-' + days;
+  const total = 75; /* armed at T-75 */
+  const frac = Math.min(1, Math.max(0, 1 - days/total));
+  document.getElementById('pdufa-bar').textContent =
+    '▓'.repeat(Math.round(frac*30)) + '░'.repeat(30 - Math.round(frac*30)) + `  ${days}d left`;
+}
+renderPdufa(); setInterval(renderPdufa, 60000);
+
+/* ---------- live btc ---------- */
+async function tickBtc(){
+  try{
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,ils&include_24hr_change=true');
+    const j = await r.json();
+    const usd = j.bitcoin.usd, chg = j.bitcoin.usd_24h_change, ils = j.bitcoin.ils;
+    const row = document.getElementById('btc-row');
+    if(row){
+      row.querySelector('.last').innerHTML = '$' + usd.toLocaleString() + ' <span class="dot"></span>';
+      row.querySelector('.d1').innerHTML = fmtPct(chg);
+    }
+    const now = new Date();
+    document.getElementById('btc-log-ts').textContent =
+      now.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('btc-log').innerHTML =
+      `$${usd.toLocaleString()} (₪${Math.round(ils).toLocaleString()}) ${chg>=0?'▲':'▼'}${Math.abs(chg).toFixed(2)}% 24h — ${Math.abs(chg)<2?'routine noise, no alert':'worth a look'}`;
+  }catch(e){
+    const last = DATA.BTC.closes30.at(-1);
+    document.getElementById('btc-log').textContent = `feed error — last baked $${last.toLocaleString()}`;
+  }
+}
+tickBtc(); setInterval(tickBtc, 60000);
+
+/* ---------- clock ---------- */
+setInterval(()=>{
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Jerusalem'}) + ' IDT';
+}, 1000);
+
+/* ---------- boot ---------- */
+const BOOT = [
+ ['[  0.000] booting omri-markets v2.0 "terminal edition"', 'dim'],
+ ['[  0.041] mounting /dev/portfolio .................. <b class="green">OK</b>', ''],
+ ['[  0.112] holdings: IBIT PYPD INTC TA125 ........... <b class="green">OK</b>', ''],
+ ['[  0.203] coingecko live feed ...................... <b class="green">LIVE</b>', ''],
+ ['[  0.330] yahoo last-close snapshots ............... <b class="green">OK</b>', ''],
+ ['[  0.512] pdufa timer .............................. <b class="amber">ARMED</b>', ''],
+ ['[  0.666] challenge_100: day 2/7 ................... <b class="cyan">RUNNING</b>', ''],
+ ['[  0.901] rendering scoreboard .................... <b class="green">OK</b>', ''],
+ ['', ''],
+];
+(async()=>{
+  const el = document.getElementById('boot');
+  for(const [line] of BOOT){
+    const div = document.createElement('div');
+    div.innerHTML = line;
+    el.appendChild(div);
+    await new Promise(r => setTimeout(r, line ? 90 : 0));
+  }
+  const c = document.createElement('span'); c.className = 'cursor'; el.appendChild(c);
+})();
+
+/* ---------- command line ---------- */
+const CMDS = {
+  help: () => `commands: holdings · btc · pdufa · challenge · news · whoami · motd · clear · sudo\n<span class="dim">hebrew accepted. judgment guaranteed.</span>`,
+  holdings: () => document.querySelector('#board').innerText.replace(/\n/g, ' | '),
+  btc: () => document.getElementById('btc-log').innerText,
+  pdufa: () => document.getElementById('pdufa-days').textContent + ' to the PYPD binary. outcomes: APPROVE / CRL. no middle setting.',
+  challenge: () => `day 2/7 · ₪0 banked · track A waiting on omri · track B scanning.\n<span class="dim">deadline 2026-09-20. the machine does not panic before day 6.</span>`,
+  news: () => `goldman flipped → 25bp hike expected · brent $108.23 after saudi strikes · full log above.`,
+  whoami: () => `omri · team lead · fresh groom <span class="he">(מזל טוב)</span> · holder of a large INTC decision`,
+  motd: () => `<span class="he">"הכסף שלך. בלי הרעש. ועכשיו גם לא כמו של כולם."</span>`,
+  sudo: () => `<span class="red">permission denied.</span> nice try.`,
+  'מרהיב': () => `<span class="amber">v3.</span>`,
+  clear: () => { document.getElementById('scrollback').innerHTML=''; return null; },
+};
+document.getElementById('cmd').addEventListener('keydown', e=>{
+  if(e.key !== 'Enter') return;
+  const raw = e.target.value.trim(); e.target.value='';
+  if(!raw) return;
+  const sb = document.getElementById('scrollback');
+  const fn = CMDS[raw.toLowerCase()] || CMDS[raw];
+  const out = fn ? fn() : `<span class="red">command not found:</span> ${raw} — try 'help'`;
+  sb.innerHTML += `<div><span class="green">omri@markets:~$</span> ${raw}</div>` + (out===null?'':`<div style="margin:.2em 0 .9em 2ch">${out}</div>`);
+  sb.scrollIntoView({behavior:'smooth', block:'nearest'});
+});
+
+document.getElementById('foot').innerHTML =
+`built by <b>raul-instinct</b> during a wedding · repo <a href="https://github.com/raul-instinct/omri-markets">raul-instinct/omri-markets</a>
+v1 was "generic". v2 has a shell. type <span class="green">help</span> below ↑
+data: yahoo finance · coingecko · themarker — analysis, not advice. <span class="he">אתה לוחץ על הקניות.</span>`;
+</script>
+</body>
+</html>
