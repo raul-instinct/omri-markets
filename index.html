@@ -40,6 +40,7 @@ a:hover{text-decoration:underline}
 .red{color:var(--red)}
 .cyan{color:var(--cyan)}
 .he{color:#9fd898}
+.heb{color:#9fd898;direction:rtl;unicode-bidi:isolate;display:inline-block}
 #boot{white-space:pre-wrap;margin-bottom:1.2em;min-height:9em}
 .cursor{display:inline-block;width:.62em;height:1.1em;background:var(--green);
   vertical-align:text-bottom;animation:blink 1s steps(1) infinite;box-shadow:0 0 8px var(--green)}
@@ -123,7 +124,7 @@ tr:hover td{background:rgba(74,246,38,.05)}
       <dt>core</dt>      <dd><span id="alloc-core" class="bar"></span> <span class="dim">IBI TA-125 tracker · 5112628 · 0% mgmt · "ליבת התיק"</span></dd>
       <dt>bets</dt>      <dd><span id="alloc-bets" class="bar"></span> <span class="dim">IBIT ~44% · PYPD ~29% of IL book — sized as bets, not beliefs</span></dd>
       <dt>legacy</dt>    <dd><span id="alloc-legacy" class="bar"></span> <span class="dim">INTC RSUs @ E*TRADE ≈ $34.8k — dwarfs everything. decision deferred until after Munich</span></dd>
-      <dt>rule</dt>      <dd class="he dim">ניתוח, לא ייעוץ. אתה לוחץ על הקניות.</dd>
+      <dt>rule</dt>      <dd class="heb dim">ניתוח, לא ייעוץ. אתה לוחץ על הקניות.</dd>
     </dl>
   </section>
 
@@ -147,7 +148,7 @@ tr:hover td{background:rgba(74,246,38,.05)}
       <dt>elapsed</dt>   <dd><span class="bar">██░░░░░░░░░░░</span> <span class="dim">2/7 days · ₪0 banked · no guaranteed returns were promised</span></dd>
       <dt>track A</dt>   <dd class="dim">waze-carpool payout held since Mar 2026 → <span class="amber">WAITING-ON-OMRI</span> (his Google Payments, his click)</dd>
       <dt>track B</dt>   <dd class="dim">flip scan: liquid items under market → <span class="cyan">SCANNING</span> (open sources only; yad2 bot-walled)</dd>
-      <dt>note</dt>      <dd class="he dim">ראול עובד. עומרי מתחתן. סדר העדיפויות תקין.</dd>
+      <dt>note</dt>      <dd class="heb dim">ראול עובד. עומרי מתחתן. סדר העדיפויות תקין.</dd>
     </dl>
   </section>
 
@@ -156,7 +157,7 @@ tr:hover td{background:rgba(74,246,38,.05)}
   <section class="panel" data-title="MACRO LOG · ראשי">
     <div class="logline"><span class="ts">Sep 14 10:21</span> <span class="amber">goldman[macro]</span>: call flipped → now expects <b>25bp HIKE</b> this week; markets pricing it in <span class="dim">[<a href="https://www.reuters.com/business/goldman-sachs-now-expects-fed-hike-rates-september-2026-09-14/">reuters</a>]</span></div>
     <div class="logline"><span class="ts">Sep 13 22:04</span> <span class="red">energy[oil]</span>: brent <span class="red">+3.46% → $108.23</span> · fresh strikes on saudi, E-W pipeline shut <span class="dim">[<a href="https://www.reuters.com/business/energy/oil-prices-jump-more-than-3-after-new-strikes-saudi-strait-hormuz-2026-09-13/">reuters</a>]</span></div>
-    <div class="logline"><span class="ts">Sep 14 10:22</span> <span class="cyan">radar[meta]</span>: wedding-day interrupt cost high → logged, not pushed. <span class="he dim">מזל טוב, אגב.</span></div>
+    <div class="logline"><span class="ts">Sep 14 10:22</span> <span class="cyan">radar[meta]</span>: wedding-day interrupt cost high → logged, not pushed. <span class="heb dim">מזל טוב, אגב.</span></div>
     <div class="logline"><span class="ts" id="btc-log-ts">--</span> <span class="green">btc[live]</span>: <span id="btc-log">connecting to coingecko…</span></div>
   </section>
 
@@ -241,7 +242,8 @@ document.getElementById('alloc-legacy').textContent = bar(0.95) + '  big';
 /* ---------- pdufa countdown ---------- */
 const PDUFA = new Date('2026-11-28T17:00:00-05:00');
 function renderPdufa(){
-  const days = Math.max(0, Math.ceil((PDUFA - Date.now()) / 86400000));
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.max(0, Math.round((new Date('2026-11-28T00:00:00') - today) / 86400000));
   document.getElementById('pdufa-days').textContent = 'T-' + days;
   const total = 75; /* armed at T-75 */
   const frac = Math.min(1, Math.max(0, 1 - days/total));
@@ -263,7 +265,7 @@ async function tickBtc(){
     }
     const now = new Date();
     document.getElementById('btc-log-ts').textContent =
-      now.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) + ' ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()] + ' ' + String(now.getDate()).padStart(2,'0') + ' ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('btc-log').innerHTML =
       `$${usd.toLocaleString()} (₪${Math.round(ils).toLocaleString()}) ${chg>=0?'▲':'▼'}${Math.abs(chg).toFixed(2)}% 24h — ${Math.abs(chg)<2?'routine noise, no alert':'worth a look'}`;
   }catch(e){
@@ -330,7 +332,7 @@ document.getElementById('cmd').addEventListener('keydown', e=>{
 document.getElementById('foot').innerHTML =
 `built by <b>raul-instinct</b> during a wedding · repo <a href="https://github.com/raul-instinct/omri-markets">raul-instinct/omri-markets</a>
 v1 was "generic". v2 has a shell. type <span class="green">help</span> below ↑
-data: yahoo finance · coingecko · themarker — analysis, not advice. <span class="he">אתה לוחץ על הקניות.</span>`;
+data: yahoo finance · coingecko · themarker — analysis, not advice. <span class="heb">אתה לוחץ על הקניות.</span>`;
 </script>
 </body>
 </html>
