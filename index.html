@@ -103,7 +103,8 @@ h2{font-size:16px; font-weight:700}
 .news-item a:hover{text-decoration:underline}
 
 /* ---------- table ---------- */
-table{width:100%; border-collapse:collapse; font-size:14px}
+.table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+table{width:100%; border-collapse:collapse; font-size:14px; min-width:460px}
 th{font-size:11.5px; color:var(--faint); font-weight:600; text-align:right; padding:0 8px 8px; border-bottom:1px solid var(--line)}
 td{padding:11px 8px; border-bottom:1px solid var(--line2); vertical-align:middle}
 tr:last-child td{border-bottom:0}
@@ -191,10 +192,12 @@ footer a{color:var(--sub)}
       <h2>לוח תוצאות</h2>
       <span class="note" style="margin:0">מה השתנה מאז שהסתכלת</span>
     </div>
+    <div class="table-wrap">
     <table id="board">
       <thead><tr><th>נייר</th><th class="n">מחיר</th><th class="n">יום</th><th class="n">שבוע</th><th class="n">חודש</th><th class="n">מצב</th></tr></thead>
       <tbody></tbody>
     </table>
+    </div>
     <div class="note" id="provenance"></div>
   </section>
 
@@ -427,7 +430,7 @@ tickClock(); setInterval(tickClock, 1000);
 /* ---------- footer + easter egg ---------- */
 document.getElementById('foot').innerHTML =
 `נבנה על ידי <b>raul-instinct</b> · ריפו <a href="https://github.com/raul-instinct/omri-markets">raul-instinct/omri-markets</a><br>
-v1 היה "גנרי". v2 היה טרמינל. v3 הוסיף גרפים. v4 נקי · ניתוח, לא ייעוץ — אתה לוחץ על הקניות · <span id="egg">מרהיב?</span>`;
+v1 היה "גנרי". v2 היה טרמינל. v3 הוסיף גרפים. v4 נקי · ניתוח, לא ייעוץ - אתה לוחץ על הקניות · <span id="egg">מרהיב?</span>`;
 document.getElementById('egg').addEventListener('click', ()=>{
   const t = document.getElementById('toast');
   t.classList.add('show');
