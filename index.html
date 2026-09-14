@@ -45,10 +45,10 @@ h1{font-size:30px; font-weight:800; letter-spacing:-.01em; margin:4px 0 6px}
 .up{color:var(--up)} .down{color:var(--down)} .dim{color:var(--sub)} .faint{color:var(--faint)}
 
 /* ---------- kpi strip ---------- */
-.kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px}
+.kpis{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:20px}
 .kpi{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px 10px; box-shadow:var(--shadow); min-width:0}
 .kpi-top{display:flex; align-items:baseline; gap:8px; margin-bottom:6px}
-.kpi .sym{font-weight:700; font-size:14px}
+.kpi .sym{font-weight:700; font-size:14px; white-space:nowrap}
 .kpi .nm{color:var(--sub); font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .kpi .price{font-size:20px; font-weight:700; direction:ltr; text-align:right}
 .kpi .chg{font-size:12.5px; font-weight:600; direction:ltr; text-align:right; margin-top:1px}
@@ -69,6 +69,8 @@ h2{font-size:16px; font-weight:700}
 
 .charts{display:grid; grid-template-columns:1fr 1fr; gap:18px}
 .chart-card{border:1px solid var(--line2); border-radius:12px; padding:14px 16px; min-width:0}
+.chart-card.featured{grid-column:1 / -1}
+.chart-card.featured .chart-body{height:260px}
 .chart-head{display:flex; align-items:baseline; gap:8px; margin-bottom:8px}
 .chart-head .sym{font-weight:700; font-size:14px}
 .chart-head .nm{color:var(--sub); font-size:12px; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -118,7 +120,7 @@ footer a{color:var(--sub)}
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
 @media (max-width:900px){
-  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpis{grid-template-columns:repeat(3,1fr)}
   .charts{grid-template-columns:1fr}
   .trio{grid-template-columns:1fr}
 }
@@ -140,7 +142,7 @@ footer a{color:var(--sub)}
     <div>
       <div class="overline" dir="ltr">OMRI · MARKETS</div>
       <h1>הכסף שלך. בלי הרעש.</h1>
-      <div class="sub">מניות: נתוני סגירה 11.9 · BTC חי מ-CoinGecko · <span id="clock">--:--:--</span></div>
+      <div class="sub">מניות: נתוני סגירה 11.9 · BTC חי <span dir="ltr">(CoinGecko)</span> · <span id="clock" dir="ltr">--:--:--</span></div>
     </div>
     <div class="btc-pill" id="btc-pill"><span class="live-dot"></span><span>BTC</span><span class="num" id="btc-pill-px">—</span><span class="chg dim" id="btc-pill-chg"></span></div>
   </header>
@@ -207,11 +209,11 @@ const ASOF = '2026-09-11';
 
 /* ---------- series meta ---------- */
 const SERIES = [
+  {sym:'BTC',  name:'ביטקוין · חי',           cur:'$', data:HIST.BTC, live:true},
   {sym:'IBIT', name:'ETF ביטקוין',            cur:'$', data:HIST.IBIT},
   {sym:'PYPD', name:'ביוטק · PDUFA',          cur:'$', data:HIST.PYPD},
   {sym:'INTC', name:'מורשת RSU',              cur:'$', data:HIST.INTC},
-  {sym:'BTC',  name:'ביטקוין · חי',           cur:'$', data:HIST.BTC, live:true},
-  {sym:'EIS',  name:'פרוקסי ת"א 125 · MSCI ישראל', cur:'$', data:HIST.EIS},
+  {sym:'EIS',  name:'פרוקסי ת"א 125',         cur:'$', data:HIST.EIS},
 ];
 let RANGE = 90;
 const charts = [];
@@ -258,15 +260,15 @@ function buildCharts(){
   const host = document.getElementById('charts');
   host.innerHTML = '';
   charts.length = 0;
-  for(const s of SERIES){
+  SERIES.forEach((s, i) => {
     const card = document.createElement('div');
-    card.className = 'chart-card';
+    card.className = 'chart-card' + (i === 0 ? ' featured' : '');
     card.innerHTML = `<div class="chart-head">
       <span class="sym" dir="ltr">${s.sym}</span><span class="nm">${s.name}</span>
       <span class="px num" id="px-${s.sym}"></span></div>
       <div class="chart-body" id="ch-${s.sym}"></div>`;
     host.appendChild(card);
-  }
+  });
   renderCharts();
 }
 function renderCharts(){
